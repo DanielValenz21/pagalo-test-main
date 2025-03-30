@@ -28,7 +28,7 @@ const swaggerOptions = {
     // Si quieres forzar que TODOS los endpoints requieran token:
     // security: [ { bearerAuth: [] } ]
   },
-  apis: ['./src/**/*.js'], // Ajusta donde guardas tus anotaciones JSDoc
+  apis: ['./src/**/*.js'],
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);

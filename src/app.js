@@ -10,8 +10,10 @@ app.use(express.json());
 // Montamos Swagger en /api-docs
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-// Montamos rutas
+// Rutas de Auth
 app.use('/api/auth', authRoutes);
+
+// Rutas de Transacciones
 app.use('/api/transactions', transactionRoutes);
 
 module.exports = app;

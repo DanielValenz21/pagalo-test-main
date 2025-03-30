@@ -1,6 +1,6 @@
 // src/modules/transaction/transaction.routes.js
 const { Router } = require('express');
-const { listTransactions } = require('./transaction.controller');
+const { listTransactions, getPaymentByUUID } = require('./transaction.controller');
 
 const router = Router();
 
@@ -74,5 +74,39 @@ const router = Router();
  *         description: Error interno
  */
 router.post('/list', listTransactions);
+
+/**
+ * @swagger
+ * /api/transactions/payment:
+ *   post:
+ *     summary: Obtener pago por UUID
+ *     tags:
+ *       - Transactions
+ *     description: Llama al endpoint remoto de Pagalo y requiere Bearer Token
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               uuid:
+ *                 type: string
+ *                 description: UUID del pago
+ *             example:
+ *               uuid: "abc123-def456-etc"
+ *     responses:
+ *       200:
+ *         description: Detalle del pago
+ *       400:
+ *         description: Falta UUID
+ *       401:
+ *         description: Falta Bearer Token
+ *       500:
+ *         description: Error interno
+ */
+router.post('/payment', getPaymentByUUID);
 
 module.exports = router;

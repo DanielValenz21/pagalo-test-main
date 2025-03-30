@@ -3,7 +3,7 @@ const axios = require('axios');
 
 /**
  * Llama al servicio remoto de Pagalo para hacer login.
- * Ajusta la URL según tu doc (https://api.pagalo.co/v1/login o https://app.pagalocard.com/v1/login).
+ * Ajusta la URL según tu doc (p.ej: https://api.pagalo.co/v1/login).
  */
 async function loginToPagalo(req, res) {
   try {

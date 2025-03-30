@@ -16,7 +16,7 @@ async function listTransactions(req, res) {
       return res.status(401).json({ message: 'Falta Bearer Token en Authorization header' });
     }
 
-    // Llamamos al endpoint remoto, ajusta la URL si es: https://app.pagalocard.com/v1/integration/transactions
+    // Llamamos al endpoint remoto
     const url = 'https://api.pagalo.co/v1/integration/transactions';
 
     const pagaloResponse = await axios.post(url, payload, {
@@ -31,13 +31,51 @@ async function listTransactions(req, res) {
 
   } catch (error) {
     console.error('Error en listTransactions:', error.message);
-
     const statusCode = error.response?.status || 500;
     const data = error.response?.data || { message: 'Error al listar transacciones' };
     return res.status(statusCode).json(data);
   }
 }
 
+/**
+ * Obtiene la información de un pago específico a partir de un uuid
+ * Endpoint remoto: https://api.pagalo.co/v1/integration/payment
+ */
+async function getPaymentByUUID(req, res) {
+  try {
+    const { uuid } = req.body;
+    if (!uuid) {
+      return res.status(400).json({ message: 'Falta uuid en el cuerpo de la petición.' });
+    }
+
+    // Bearer token
+    const tokenHeader = req.headers.authorization;
+    if (!tokenHeader) {
+      return res.status(401).json({ message: 'Falta Bearer Token en Authorization header' });
+    }
+
+    // Ajusta si la URL real es otra, p.ej https://app.pagalocard.com/v1/integration/payment
+    const url = 'https://api.pagalo.co/v1/integration/payment';
+
+    const pagaloResponse = await axios.post(url, { uuid }, {
+      headers: {
+        Authorization: tokenHeader,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    // Retornamos la respuesta de Pagalo tal cual
+    return res.status(200).json(pagaloResponse.data);
+
+  } catch (error) {
+    console.error('Error en getPaymentByUUID:', error.message);
+    const statusCode = error.response?.status || 500;
+    const data = error.response?.data || { message: 'Error al obtener el pago por UUID' };
+    return res.status(statusCode).json(data);
+  }
+}
+
 module.exports = {
   listTransactions,
+  getPaymentByUUID,
 };
