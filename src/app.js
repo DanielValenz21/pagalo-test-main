@@ -7,13 +7,11 @@ const transactionRoutes = require('./modules/transaction/transaction.routes');
 const app = express();
 app.use(express.json());
 
-// Montamos Swagger en /api-docs
+// Montamos Swagger en /api-docs (opcional si lo quieres documentar)
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-// Rutas de Auth
+// Rutas
 app.use('/api/auth', authRoutes);
-
-// Rutas de Transacciones
 app.use('/api/transactions', transactionRoutes);
 
 module.exports = app;

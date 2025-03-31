@@ -1,81 +1,91 @@
 // src/modules/transaction/transaction.controller.js
 const axios = require('axios');
 
-/**
- * Llama al endpoint remoto https://api.pagalo.co/v1/integration/transactions
- * con el body y el Bearer token que llegan por la petición local
- */
 async function listTransactions(req, res) {
   try {
-    // Body que Swagger u otro cliente envía
     const payload = req.body;
-
-    // Header Authorization que se inyecta vía Swagger “Authorize”
     const tokenHeader = req.headers.authorization;
+    
+    console.log("[DEBUG] Payload recibido:", JSON.stringify(payload, null, 2));
+    console.log("[DEBUG] Authorization header recibido:", tokenHeader);
+    
     if (!tokenHeader) {
-      return res.status(401).json({ message: 'Falta Bearer Token en Authorization header' });
+      console.error("[ERROR] Falta Bearer Token en Authorization");
+      return res.status(401).json({ message: 'Falta Bearer Token en Authorization' });
     }
-
-    // Llamamos al endpoint remoto
-    const url = 'https://api.pagalo.co/v1/integration/transactions';
-
+    
+    const baseUrl = process.env.PAGALO_API_BASE_URL; // https://api.pagalo.co
+    const url = `${baseUrl}/v1/integration/transactions`;
+    console.log("[DEBUG] Enviando petición POST a:", url);
+    
     const pagaloResponse = await axios.post(url, payload, {
       headers: {
         Authorization: tokenHeader,
         'Content-Type': 'application/json'
       }
     });
-
-    // Devolvemos la respuesta tal cual
+    
+    console.log("[DEBUG] Respuesta de Pagalo:", JSON.stringify(pagaloResponse.data, null, 2));
     return res.status(200).json(pagaloResponse.data);
-
   } catch (error) {
-    console.error('Error en listTransactions:', error.message);
-    const statusCode = error.response?.status || 500;
-    const data = error.response?.data || { message: 'Error al listar transacciones' };
-    return res.status(statusCode).json(data);
+    if (error.response) {
+      console.error("[ERROR] Respuesta de error:", JSON.stringify(error.response.data, null, 2));
+      return res.status(error.response.status).json({
+        message: 'Error en listTransactions',
+        error: error.response.data
+      });
+    } else {
+      console.error("[ERROR] Error:", error.message);
+      return res.status(500).json({ message: 'Error en listTransactions', error: error.message });
+    }
   }
 }
 
-/**
- * Obtiene la información de un pago específico a partir de un uuid
- * Endpoint remoto: https://api.pagalo.co/v1/integration/payment
- */
 async function getPaymentByUUID(req, res) {
   try {
     const { uuid } = req.body;
-    if (!uuid) {
-      return res.status(400).json({ message: 'Falta uuid en el cuerpo de la petición.' });
-    }
-
-    // Bearer token
     const tokenHeader = req.headers.authorization;
-    if (!tokenHeader) {
-      return res.status(401).json({ message: 'Falta Bearer Token en Authorization header' });
+    
+    console.log("[DEBUG] UUID recibido:", uuid);
+    console.log("[DEBUG] Authorization header recibido:", tokenHeader);
+    
+    if (!uuid) {
+      console.error("[ERROR] Falta uuid en el body");
+      return res.status(400).json({ message: 'Falta uuid en el body.' });
     }
-
-    // Ajusta si la URL real es otra, p.ej https://app.pagalocard.com/v1/integration/payment
-    const url = 'https://api.pagalo.co/v1/integration/payment';
-
+    if (!tokenHeader) {
+      console.error("[ERROR] Falta Bearer Token en el header");
+      return res.status(401).json({ message: 'Falta Bearer Token en Authorization' });
+    }
+    
+    const baseUrl = process.env.PAGALO_API_BASE_URL;
+    const url = `${baseUrl}/v1/integration/payment`;
+    console.log("[DEBUG] Enviando petición POST a:", url);
+    
     const pagaloResponse = await axios.post(url, { uuid }, {
       headers: {
         Authorization: tokenHeader,
         'Content-Type': 'application/json'
       }
     });
-
-    // Retornamos la respuesta de Pagalo tal cual
+    
+    console.log("[DEBUG] Respuesta de Pagalo:", JSON.stringify(pagaloResponse.data, null, 2));
     return res.status(200).json(pagaloResponse.data);
-
   } catch (error) {
-    console.error('Error en getPaymentByUUID:', error.message);
-    const statusCode = error.response?.status || 500;
-    const data = error.response?.data || { message: 'Error al obtener el pago por UUID' };
-    return res.status(statusCode).json(data);
+    if (error.response) {
+      console.error("[ERROR] Respuesta de error:", JSON.stringify(error.response.data, null, 2));
+      return res.status(error.response.status).json({
+        message: 'Error en getPaymentByUUID',
+        error: error.response.data
+      });
+    } else {
+      console.error("[ERROR] Error:", error.message);
+      return res.status(500).json({ message: 'Error en getPaymentByUUID', error: error.message });
+    }
   }
 }
 
 module.exports = {
   listTransactions,
-  getPaymentByUUID,
+  getPaymentByUUID
 };

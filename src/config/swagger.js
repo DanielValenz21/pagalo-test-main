@@ -6,9 +6,9 @@ const swaggerOptions = {
   swaggerDefinition: {
     openapi: '3.0.0',
     info: {
-      title: 'Pagalo API',
+      title: 'Pagalo API Example',
       version: '1.0.0',
-      description: 'Documentación de la API para integrar con Pagalo'
+      description: 'Consumiendo la API de Pagalo en producción'
     },
     servers: [
       {
@@ -25,10 +25,10 @@ const swaggerOptions = {
         }
       }
     }
-    // Si quieres forzar que TODOS los endpoints requieran token:
+    // Si deseas que por defecto todos los endpoints usen seguridad, puedes agregar:
     // security: [ { bearerAuth: [] } ]
   },
-  apis: ['./src/**/*.js'],
+  apis: ['./src/**/*.js']
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);

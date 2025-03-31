@@ -11,7 +11,6 @@ const router = Router();
  *     summary: Login contra Pagalo
  *     tags:
  *       - Auth
- *     description: Envía email y password a la API remota de Pagalo y retorna el token obtenido.
  *     requestBody:
  *       required: true
  *       content:
@@ -21,17 +20,13 @@ const router = Router();
  *             properties:
  *               email:
  *                 type: string
- *                 example: devapolo@apolo.gt
+ *                 example: "usuario@example.com"
  *               password:
  *                 type: string
- *                 example: "0rQcy9Z2"
+ *                 example: "password123"
  *     responses:
  *       200:
- *         description: Respuesta exitosa con token y datos del negocio
- *       400:
- *         description: Faltan credenciales
- *       500:
- *         description: Error interno
+ *         description: Retorna token y datos del negocio
  */
 router.post('/login', loginToPagalo);
 
